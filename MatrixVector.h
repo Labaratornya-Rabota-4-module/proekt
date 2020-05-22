@@ -14,29 +14,29 @@ private:
     size_t size_;
 public:
     Vector();
-    Vector(const std::initializer_list<T>&);
+    Vector(const std::initializer_list<T>&); //конструкторы
     Vector(const Vector&);
     Vector(Vector&&);
     ~Vector();
     
-    Vector& operator= (const Vector&);
+    Vector& operator= (const Vector&); //операторы присваивания
     Vector& operator= (Vector&&);
     
-    void resize(size_t);
+    void resize(size_t);  //работа с размером вектора
     inline size_t size() const;
     
-    inline T& operator[] (size_t);
+    inline T& operator[] (size_t);  //оператор доступа по индексу
     inline const T& operator[] (size_t) const;
     template <typename D>
     friend Vector<D> operator* (const Vector<D>&, D);
     Vector& apply(T(*)(T));
     
-    Vector<T>& operator*= (T);
+    Vector<T>& operator*= (T); //операторы арифметических операций
     Vector<T>& operator+= (const Vector<T>&);
     
    
     template <typename D>
-    friend std::ostream& operator<< (std::ostream&, const Vector<D>&);
+    friend std::ostream& operator<< (std::ostream&, const Vector<D>&);  //оператор вывода в поток
 };
 
 template <typename T>
@@ -163,9 +163,8 @@ inline const T& Vector<T>::operator[] (size_t index) const
 {
     return array_[index];
 }
-/////////////////////////////////////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////////////////////
+
+
 template <typename T>
 Vector<T>& Vector<T>::apply(T(*f)(T))
 {
@@ -246,7 +245,7 @@ std::ostream& operator<< (std::ostream& stream, const Vector<T>& arg)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
@@ -255,21 +254,21 @@ class Matrix
 private:
     Vector<Vector<T>> array_;
 public:
-    class Slice;
+    class Slice;  //срезы
     Matrix();
-    Matrix(const std::initializer_list< std::initializer_list<T> >&);
+    Matrix(const std::initializer_list< std::initializer_list<T> >&); //конструкторы
     Matrix(const Matrix&);
     Matrix(Matrix&&);
     ~Matrix();
     
-    Matrix<T>& operator= (const Matrix<T>&);
+    Matrix<T>& operator= (const Matrix<T>&);  //операторы присваивания
     Matrix<T>& operator= (Matrix<T>&&); 
     Matrix<T>& operator= (const Vector<T>&);
     
-    inline Vector<T>& operator[] (size_t);
+    inline Vector<T>& operator[] (size_t); //оператор доступа по индексу
     inline const Vector<T>& operator[] (size_t) const;
     
-    void resize(size_t, size_t);
+    void resize(size_t, size_t);  //работа с размерами
     
     size_t columns() const;
     size_t rows() const;
