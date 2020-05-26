@@ -28,8 +28,6 @@ std::map<std::string, double> OdeParser::operator() (std::ifstream& file)
     {
         std::getline(file, pName); // Берем строку файла
         
-        if (file.eof()) break;
-        
         size_t delimiter_position = pName.find('=');
         if (delimiter_position != 0 && delimiter_position != std::string::npos) // Если корректный формат
         {
@@ -38,8 +36,9 @@ std::map<std::string, double> OdeParser::operator() (std::ifstream& file)
             
             map[pName] = std::atof(pValue.c_str()); // Если не смогли привести к типу, то записывем ноль
         }
+        
+        if (file.eof()) break;
     }
     
     return map; // Возвращаем ассоциативный объект
 }
-
