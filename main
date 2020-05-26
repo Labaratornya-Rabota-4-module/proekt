@@ -1,0 +1,13 @@
+include <iostream>
+#include <filesystem>
+#include "OdeParser.h"
+#include "OdeSystems.h"
+// Могут добавиться include в процессе работы
+
+const std::filesystem::path SOURCE_FOLDER_PATH = "source"; // Путь к папке из которой программа будет брать файлы с заданием
+const std::filesystem::path DESTINATION_FOLDER_PATH = "destination"; // Путь к папке в которую программа будет записывать решение
+const size_t THREADS_NUMBER = 1; // Количество потоков на которых будут выполняться задачи
+// *Если путь указан без С:// то путь будет считаться относительно места запуска программы
+
+// Проверка данных на корректность
+
