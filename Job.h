@@ -4,9 +4,10 @@
 // Абстрактная работа
 class Job
 {
+	
 protected:
-	std::ifstream fileIn; // Файл, из которого необходимо считать начальные данные
-	std::ofstream fileOut; // Файл, в который необходимо записать результат
+	std::ifstream fileIn; // Файл, из которого считываем начальные данные
+	std::ofstream fileOut; // Файл, в который записываем результат
 public:
 	Job(const Job&) = delete;
 	// Конструктор
