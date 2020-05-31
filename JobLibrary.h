@@ -27,6 +27,22 @@ public:
 
 // КОНКРЕТНЫЕ ОБРАБОТЧИКИ
 
+class IntegrateLorenzAttractorHandler : public Handler
+{
+public:
+	virtual Job* handle(const std::string& tag, const std::filesystem::path& fileInName, const std::filesystem::path& fileOutName) override
+	{
+		if (tag == "IntegrateLorenzAttractor")
+		{
+			return new IntegrateJob<LorenzAttractor, OdeParser>(std::ifstream(fileInName), std::ofstream(fileOutName));
+		}
+		else
+		{
+			return Handler::handle(tag, fileInName, fileOutName);
+		}
+	}
+};
+
 class IntegrateVanDerPolHandler : public Handler
 {
 public:
@@ -41,22 +57,6 @@ public:
 		{
 			return Handler::handle(tag, fileInName, fileOutName);
 			// Переходим к следующему обработчику
-		}
-	}
-};
-
-class IntegrateLorenzAttractorHandler : public Handler
-{
-public:
-	virtual Job* handle(const std::string& tag, const std::filesystem::path& fileInName, const std::filesystem::path& fileOutName) override
-	{
-		if (tag == "IntegrateLorenzAttractor")
-		{
-			return new IntegrateJob<LorenzAttractor, OdeParser>(std::ifstream(fileInName), std::ofstream(fileOutName));
-		}
-		else
-		{
-			return Handler::handle(tag, fileInName, fileOutName);
 		}
 	}
 };
