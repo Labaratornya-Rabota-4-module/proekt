@@ -16,3 +16,18 @@ bool isGoodData()
 		THREADS_NUMBER > 0 && // Количество потоков больше 0
 		SOURCE_FOLDER_PATH != DESTINATION_FOLDER_PATH); // Папка откуда берутся задания не совпадает с папкой куда помещаются решнные задания
 }
+int main()
+{
+	std::chrono::time_point start = std::chrono::high_resolution_clock::now(); // Засекаем время начала
+	if (isGoodData()) // Если данные корректны
+	{
+		JobKeeper job_keeper(SOURCE_FOLDER_PATH, DESTINATION_FOLDER_PATH); // Создаем объект который генерирует задачи
+		JobMaker job_maker(THREADS_NUMBER); // Создаем исполнителя
+		job_maker.makeJobs(&job_keeper); // Выполняем задачи
+	}
+	std::chrono::time_point end = std::chrono::high_resolution_clock::now(); // Зесекаем время конца
+	std::chrono::milliseconds time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start); // Вычисляем длительность
+
+	std::cout << "Programm duration: " << time.count() << " milliseconds" << std::endl; // Выводим время
+	system("pause");
+}
