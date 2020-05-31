@@ -16,14 +16,11 @@ public:
 	{
 		if (nextHandler)
 			return nextHandler->handle(tag, fileInName, fileOutName);
-
 		return nullptr;
 	}
-
 	virtual Handler* setNext(Handler* handler)
 	{
 		nextHandler = handler;
-
 		return handler;
 	}
 };
@@ -96,7 +93,7 @@ public:
 	}
 };
 
-//	БИБЛИОТЕКА КОТОРАЯ СОЗДАЕТ ЗАДAЧИ
+//	БИБЛИОТЕКА, КОТОРАЯ СОЗДАЕТ ЗАДAЧИ
 
 // Класс у которого можно попросить работу по тэгу
 class JobLibrary
