@@ -3,8 +3,7 @@
 
 // Абстрактная работа
 class Job
-{
-	
+{	
 protected:
 	std::ifstream fileIn; // Файл, из которого считываем начальные данные
 	std::ofstream fileOut; // Файл, в который записываем результат
