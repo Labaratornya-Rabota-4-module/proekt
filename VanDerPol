@@ -1,0 +1,8 @@
+<IntegrateVanDerPol>
+timespan=0.03
+nullTime=1.2
+x0=1.3
+y0=10.6
+iterationNumber=1200
+m=4.5
+//пример данных для проверки работы асцилятора Ван Дер Поля 
