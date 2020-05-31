@@ -3,8 +3,6 @@
 #include <mutex>
 #include <thread>
 
-
-
 // Класс который выполняет задания
 class JobMaker
 {
