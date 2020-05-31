@@ -72,39 +72,11 @@ void BaseOde::setNullSettings(const std::map<std::string, double>& map)
 
 
 
-// Класс ОДУ для Ван Дер Поля
-class VanDerPol
-{
-private:
-    double m; // Коэффициент в модели (ню)
-    
-    size_t iterationNumber; // Количество итераций
-    double timespan; // Размер шага по времени
-    Vector<double> nullState; // Начальное состояние
-    double nullTime; // Начальное время
-public:
-    VanDerPol() : m(1.2), nullState({0, 0}),
-    iterationNumber(1000), nullTime(0), timespan(0.05)
-    { }
-    // Класс функцтор как в 3 лабе
-    Vector<double> operator() (double time, const Vector<double>& state) const;
-    void setNullSettings(std::map<std::string, double>&); // Функция которая устанавливает параметры модели по ассоциативному массиву
-    
-    Vector<double> getNullState() const
-    { return nullState; }
-    double getNullTime() const
-    { return nullTime; }
-    double getTimespan() const
-    { return timespan; }
-    size_t getIterationNumber() const
-    { return iterationNumber; }
-};
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-//                        Первая  система ОДУ - Асцилятор Ван Дер Поля
+//                        Первая  система ОДУ - Осциллятор Ван Дер Поля
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
