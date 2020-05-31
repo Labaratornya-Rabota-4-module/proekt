@@ -3,7 +3,7 @@
 #include <string>
 #include "JobLibrary.h"
 
-// Функция которая возвращает тэг задачи
+// Функция, которая возвращает тэг задачи
 std::string identify_tag(std::ifstream& file)
 {
 	std::string tag;
@@ -20,19 +20,16 @@ std::string identify_tag(std::ifstream& file)
 
 		return tag;
 	}
-
-	return std::string(); // Если неизвестный тип задания возвращаем пустую строку
+	return std::string(); // Если неизвестный тип задания - возвращаем пустую строку
 }
 
-
-
-// Класс который содержит и генерирует задачи
+// Класс, который содержит и генерирует задачи
 class JobKeeper
 {
 private:
-	std::filesystem::directory_iterator currentEntry; // Текущая директори \ файл
-	std::filesystem::path destinationFolderPath; // Путь до папки в которую необходимо записать ответ
-	JobLibrary jobLibrary; // Библиотека которая предоставляет задачи
+	std::filesystem::directory_iterator currentEntry; // Текущая директория файла
+	std::filesystem::path destinationFolderPath; // Путь до папки, в которую необходимо записать ответ
+	JobLibrary jobLibrary; // Библиотека, которая предоставляет задачи
 	size_t jobNumber; // Номер задачи
 public:
 	JobKeeper(const std::filesystem::path&, const std::filesystem::path&);
@@ -42,15 +39,13 @@ private:
 };
 
 JobKeeper::JobKeeper(const std::filesystem::path& folder_from, const std::filesystem::path& folder_to) :
-	currentEntry(std::filesystem::directory_iterator(folder_from)), // Считаем что переданная директория существует
-	destinationFolderPath(folder_to), // Считаем что директория существует
-	jobNumber(0)
-{ }
+	currentEntry(std::filesystem::directory_iterator(folder_from)), // Считаем, что переданная директория существует
+	destinationFolderPath(folder_to), // Считаем, что директория существует
+	jobNumber(0) { }
 
 Job* JobKeeper::getJob()
 {
 	Job* job = nullptr;
-
 	while (1)
 	{
 		if (currentEntry == std::filesystem::directory_iterator()) // Если прошли всю директорию
@@ -65,7 +60,7 @@ Job* JobKeeper::getJob()
 			} // Далее файл закрывается
 
 			std::filesystem::path fileOutName = destinationFolderPath;
-			fileOutName /= generateName(jobNumber); // Генерируем полное имя файла в который необходимо записать решение
+			fileOutName /= generateName(jobNumber); // Генерируем полное имя файла, в который необходимо записать решение
 				
 			job = jobLibrary.handle(tag, currentEntry->path(), fileOutName); // У библиотеки запрашиваем объект по тэгу
 
@@ -84,7 +79,6 @@ Job* JobKeeper::getJob()
 		}
 		++currentEntry;
 	}
-
 	return job; // Возвращаем работу
 }
 
