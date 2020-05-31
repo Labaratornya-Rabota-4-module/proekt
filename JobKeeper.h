@@ -1,23 +1,10 @@
 #pragma once
-#include "Job.h"
 #include <filesystem>
 #include <string>
-#include "IntegrateJob.h"
-#include "OdeParser.h"
-#include "OdeSystems.h"
+#include "JobLibrary.h"
 
-
-// Типы задач
-enum JobType
-{
-	IntegrateVanDerPol,
-	IntegrateLorenzAttractor,
-	Kmean,
-	Undefine
-};
-
-// Функция, которая определяет тип задачи
-JobType identify_type(std::ifstream& file)
+// Функция которая возвращает тэг задачи
+std::string identify_tag(std::ifstream& file)
 {
 	std::string tag;
 	file.seekg(0);
@@ -29,22 +16,23 @@ JobType identify_type(std::ifstream& file)
 	if (open_bracket != std::string::npos && close_bracket != std::string::npos && open_bracket < close_bracket) // Если нашли все скобки
 	{
 		size_t length = close_bracket - open_bracket; // Не может быть 0 по условию
-		tag = tag.substr(open_bracket + 1, length - 1); // Извлекаем подстроку
+		tag = tag.substr(open_bracket + 1, length - 1); // Извлекаем подстроку (тэг)
 
-		if (tag == "Kmean") return JobType::Kmean; // В зависимости от тега определяем тип работы
-		if (tag == "IntegrateVanDerPol") return JobType::IntegrateVanDerPol;
-		if (tag == "IntegrateLorenzAttractor") return JobType::IntegrateLorenzAttractor;
+		return tag;
 	}
 
-	return JobType::Undefine; // Если неизвестный тип задания
+	return std::string(); // Если неизвестный тип задания возвращаем пустую строку
 }
+
+
 
 // Класс который содержит и генерирует задачи
 class JobKeeper
 {
 private:
-	std::filesystem::directory_iterator currentEntry; // Текущая директория \ файл
+	std::filesystem::directory_iterator currentEntry; // Текущая директори \ файл
 	std::filesystem::path destinationFolderPath; // Путь до папки в которую необходимо записать ответ
+	JobLibrary jobLibrary; // Библиотека которая предоставляет задачи
 	size_t jobNumber; // Номер задачи
 public:
 	JobKeeper(const std::filesystem::path&, const std::filesystem::path&);
@@ -54,49 +42,49 @@ private:
 };
 
 JobKeeper::JobKeeper(const std::filesystem::path& folder_from, const std::filesystem::path& folder_to) :
-	currentEntry(std::filesystem::directory_iterator(folder_from)), // Считаем, что переданная директория существует
-	destinationFolderPath(folder_to), // Считаем, что директория существует
+	currentEntry(std::filesystem::directory_iterator(folder_from)), // Считаем что переданная директория существует
+	destinationFolderPath(folder_to), // Считаем что директория существует
 	jobNumber(0)
 { }
 
 Job* JobKeeper::getJob()
 {
 	Job* job = nullptr;
+
 	while (1)
 	{
 		if (currentEntry == std::filesystem::directory_iterator()) // Если прошли всю директорию
 			break;
+		
 		if (currentEntry->is_regular_file()) // Если текущий итератор указывает на обычный файл
 		{
-			std::ifstream file(currentEntry->path()); // Открываем его на чтение
-
-			JobType job_type = identify_type(std::ref(file)); // Опеределяем тип задачи в файле
-
-			if (job_type != JobType::Undefine) // Если тип определился
+			std::string tag;
 			{
-				++jobNumber;
-				std::filesystem::path fileOutName = destinationFolderPath;
-				fileOutName /= generateName(jobNumber); // Генерируем полное имя файла, в который необходимо записать решение
+				std::ifstream file(currentEntry->path()); // Открываем его на чтение
+				tag = identify_tag(std::ref(file)); // Опеределяем тип задачи в файле
+			} // Далее файл закрывается
 
-				switch (job_type) // В зависимости от типа
-				{
-				case JobType::IntegrateLorenzAttractor: // Создаем задачу Аттрактор Лоренца
-					job = new IntegrateJob<LorenzAttractor, OdeParser>(std::move(file), std::ofstream(fileOutName));
-					break;
-				case JobType::IntegrateVanDerPol: // Создаем задачу Ван Дер Поля
-					job = new IntegrateJob<VanDerPol, OdeParser>(std::move(file), std::ofstream(fileOutName));
-					break;
-				case JobType::Kmean:
-					break;
-				default:
-					break;
-				}
-			}
-			++currentEntry; // Передвигаем итератор
-			break;
+			std::filesystem::path fileOutName = destinationFolderPath;
+			fileOutName /= generateName(jobNumber); // Генерируем полное имя файла в который необходимо записать решение
+				
+			job = jobLibrary.handle(tag, currentEntry->path(), fileOutName); // У библиотеки запрашиваем объект по тэгу
+
+			/*std::cout << "JobKeeper Log:" << std::endl;
+			std::cout << "tag: " << tag << std::endl;
+			std::cout << "fileInName: " << currentEntry->path() << std::endl;
+			std::cout << "fileOutName: " << fileOutName << std::endl;
+			std::cout << "job: " << job << std::endl;*/
+
+			if (job != nullptr) // Если библиотека вернула работу
+			{
+				++currentEntry; // Переходим к следующему объекту в директории (папка или файл)
+				++jobNumber; // Увеличиваем количество сгенерированных задача
+				break;
+			}// Иначе переходим к другому файлу/папке
 		}
 		++currentEntry;
 	}
+
 	return job; // Возвращаем работу
 }
 
