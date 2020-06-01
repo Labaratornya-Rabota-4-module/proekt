@@ -63,13 +63,6 @@ Job* JobKeeper::getJob()
 			fileOutName /= generateName(jobNumber); // Генерируем полное имя файла, в который необходимо записать решение
 				
 			job = jobLibrary.handle(tag, currentEntry->path(), fileOutName); // У библиотеки запрашиваем объект по тэгу
-
-			/*std::cout << "JobKeeper Log:" << std::endl;
-			std::cout << "tag: " << tag << std::endl;
-			std::cout << "fileInName: " << currentEntry->path() << std::endl;
-			std::cout << "fileOutName: " << fileOutName << std::endl;
-			std::cout << "job: " << job << std::endl;*/
-
 			if (job != nullptr) // Если библиотека вернула работу
 			{
 				++currentEntry; // Переходим к следующему объекту в директории (папка или файл)
